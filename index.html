@@ -1,0 +1,90 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>自动完成任务</title>
+    <style>
+        #infoBox{
+            height: 10%;
+            width: 100%;
+        }
+        #infoBox2{
+            height: 10%;
+            width: 100%;
+        }
+        #id_iframe{
+            height: 80%;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="infoBox">0</div>
+    <div id="infoBox2">距离下次运行还有<span>32</span>分钟</div>
+    <iframe id="id_iframe" src="" frameborder="0">
+
+    </iframe>
+    <script>
+        let searchArray = ["redmiK80评测", "redmiK70评测", "redmiK60评测", "redmiK50评测", "redmiK40评测", "redmiK30评测", "redmiK20评测", 
+        "喜欢你，因为我喜欢你，比世界上的任何一个人都喜欢你。", "终于放弃了虚伪的正义，手握真正的杀意了吗？", "面对无知的嘲笑，我只能为他们默哀。",
+        "不惧怕伤害，这是什么强悍！", "刚好一分钟，你做了一场噩梦吗？", "苦到头未必是甜的，而甜到头一定是苦的 。", "life is fucking movie",
+        "鼠鼠我啊真的要郁郁了", "讲解水浒传", "明天真的会更好吗", "再见莫妮卡", "如何追求一个女孩", "如何提升自己的技术能力", "香蕉与苹果", "光只有救赎，是无法领导的。",
+        "安踏市值多少钱", "女人因秘密而美丽。", "好听的华语歌曲前十", "js如何获取0-20的随机正整数", "印度电影好看吗", "必应浏览器下载", "如何学习C++", "红毛丹是什么？",
+        "卫龙辣条", "战争就是这样，双方都认为自己是好的一方。", "这下子就有戏看了。", "谣言难过月，过月无人传。不管人们怎么评论，但只要想到这一切终将又被人们遗忘，就不会这...",
+        "king发音", "不自弃者天不弃。", "既然难逃一死，最后把负担放下来如何", "男人就应该保持冷静，沸腾的水只会被蒸发掉。", "damn会员店", "如何区分async 和 sync", "守住一方平安，尽力而为，问心无愧就好。",
+        "你可以不去选择，但永远不能放弃选择。", "不管多艰辛，多悲伤，都是有不可忘却的事情啊。", "梦想是一个天真的词，实现梦想是一个残酷的词。", "这无关经验和立场。", "如何看待鼠鼠文学", "哈基汪大旋风", "911事件",
+        "AI豆包下载", "chatgpt为什么那么厉害", "馒头健康吗？", "保护地球日", "制作蛋糕",   "编程", "世界", "梦想", "前进", "技术", "friendship", "希望", "责任", "学习", "幸福", "success", 
+        "坚持下去吧，为了明天", "友谊的小船", "勇气", "courage", "创新", "奋斗的意义", "development", "友爱", "progress", "thinking",
+        "love", "爱上一个人", "world", "perseverance", "幸福", "love is peace", "technology", "努力", "冬天买什么羽绒服", "success",
+        "坚持", "成功的反义词是什么", "dream", "成功", "希望", "买什么洗衣机比较好", "dream", "编程教程", "thinking", "谁给你的勇气", "development city", 
+        "hello the world", "前进", "学习永无止境", "responsibility怎么读", "学习一门技术", "八倍镜", "评测华为mate70",
+        "在技术的世界里，创新是推动发展的动力。","你可以通过不断学习和实践来提高自己的编程能力。","Spending time with friends and family is the most precious treasure in life.","努力和坚持是实现目标的关键，只有不断奋斗才能实现自己的梦想。",
+        "每一天都是进步的机会，我们要抓住每一个机会。","No matter what difficulties you face, never lose the courage to chase your dreams.","无论遇到什么困难，永远不要放弃追寻梦想的勇气。","Technology is changing rapidly, and you can only keep up with the times by constantly learning.","每一天都是进步的机会，我们要抓住每一个机会。",
+        "On the journey of life, there will always be some challenges that require us to face them bravely.","思考问题时，应该从多角度去分析，找到最合适的解决方案。","In the world of technology, innovation is the driving force behind progress.",
+        "In work, we should not only pursue efficiency but also pay attention to quality and innovation.","与朋友和家人共同度过时光是人生中最宝贵的财富。","努力和坚持是实现目标的关键，只有不断奋斗才能实现自己的梦想。","人生的路上，总会有一些难题需要我们勇敢面对。","You can improve your programming skills through continuous learning and practice.",
+        "思考问题时，应该从多角度去分析，找到最合适的解决方案。","Spending time with friends and family is the most precious treasure in life.","努力和坚持是实现目标的关键，只有不断奋斗才能实现自己的梦想。",
+        "你可以通过不断学习和实践来提高自己的编程能力。","Every day is an opportunity to improve, we must seize every chance.","在技术的世界里，创新是推动发展的动力。","No matter what difficulties you face, never lose the courage to chase your dreams."
+        ];
+        let searchedArray = [];
+        let infoBox_id = document.querySelector("#infoBox");
+        let count = 0;
+        let frame = document.querySelector("#id_iframe");
+        const interId2 = setInterval(async ()=>{
+            let spanEle = document.querySelector("#infoBox2 span");
+            let leftTime = Number(spanEle.innerHTML);
+            spanEle.innerHTML = String(leftTime - 1);
+        }, 60000);
+        const interId = setInterval(async ()=>{
+            runTaskTimes(4);
+            let spanEle = document.querySelector("#infoBox2 span");
+            spanEle.innerHTML = "2";
+        }, 120000);
+        //运行times,每次间隔 10000 毫秒
+        function runTaskTimes(times){
+            for(let i = 0; i < times; ++i){
+                    const interId3 = setTimeout(async ()=>{
+                    if(count >= 35){
+                        clearInterval(interId);
+                        clearInterval(interId2);
+                        let infoBox2 = document.querySelector("#infoBox2");
+                        infoBox2.innerHTML = "已经完成全部运行";
+                        return;
+                    }
+                    let randomNum = Math.floor(Math.random() * searchArray.length);
+                    let searchStr = searchArray[randomNum];
+                    while(searchedArray.includes(searchStr)){
+                        randomNum = Math.floor(Math.random() * searchArray.length);
+                        searchStr = searchArray[randomNum];
+                    }
+                    searchedArray.push(searchStr);
+                    frame.src = `https://cn.bing.com/search?q=${searchStr}&form=CHRDEF&sp=-1&lq=0&pq=start&sc=10-5&qs=n&sk=&cvid=5AF9BFF6DC594C789187AFFB1A8125A5&ghsh=0&ghacc=0&ghpl=`;
+                    ++count;
+                    infoBox_id.innerHTML = count;
+                }, 3000 + 3000 * i);
+            }
+        }
+        //运行4次
+        runTaskTimes(4);
+    </script>
+</body>
+</html>
